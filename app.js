@@ -61,6 +61,7 @@ mSubmit.onclick=function(){
 function show(h){
   cur=h;res.classList.remove('hidden');
   document.getElementById('hN').textContent=h.n;
+  const pl=document.getElementById('penaltyLink');if(pl)pl.href='penalty.html?hospital='+encodeURIComponent(h.n);
   document.getElementById('hL').textContent=h.c+', '+h.s;
   const dc=h.d<=3?'var(--teal)':h.d<=6?'var(--amber)':h.d<=8?'var(--rose)':'#dc2626';
   let bd=`<span class="bg" style="border-color:${dc}33;color:${dc};">Decile ${h.d} · ${h.dl}</span>`;
