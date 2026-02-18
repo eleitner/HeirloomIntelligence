@@ -52,7 +52,7 @@ mSubmit.onclick=function(){
   if(!d.email.includes('@')){alert('Please enter a valid email address.');return;}
   const s=JSON.parse(localStorage.getItem('heirloom_leads')||'[]');s.push(d);
   localStorage.setItem('heirloom_leads',JSON.stringify(s));
-  fetch('https://hooks.zapier.com/hooks/catch/26496010/ucmrtvk/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).catch(()=>{});
+  fetch('https://script.google.com/macros/s/AKfycbzPFuQp6_VI-A12hP81ZHB9YKr0YswbOuM3jDegsgqiqHXjncSed3kd-5XEcly2IWdm6w/exec',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).catch(()=>{});
   document.getElementById('mForm').style.display='none';
   document.getElementById('mOk').style.display='';
   document.getElementById('okHosp').textContent=cur.n;
