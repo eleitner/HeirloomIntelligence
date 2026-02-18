@@ -123,7 +123,7 @@ function rScores(cat){
   const sc=cur.sc.filter(s=>gc(s[0])===cat);
   if(!sc.length){w.innerHTML='<div class="empty">No scores in this category.</div>';return;}
   sc.sort((a,b)=>a[0]-b[0]);
-  const pm=D.cp&&D.cp[cur.d]?D.cp[cur.d]:{};
+  const pm=D.dm&&D.dm[''+h.d]?D.dm[''+h.d]:{};
   let t='<table class="stbl"><tr><th>Measure</th><th class="r">Score</th><th class="r">Peer D'+cur.d+'</th><th class="r">National</th><th class="r">vs National</th><th class="r">vs Peers</th></tr>';
   for(const s of sc){
     const cl=s[2]===1?'s-g':s[2]===-1?'s-r':'s-n';
