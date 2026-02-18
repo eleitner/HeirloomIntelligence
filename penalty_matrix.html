@@ -36,11 +36,16 @@ h1 span{color:#fb7185;}
 
 .matrix-wrap{position:relative;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 20px 20px 72px;}
 canvas{display:block;width:100%;cursor:crosshair;}
-.axis-label{position:absolute;font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:0.5px;}
+.axis-label{position:absolute;font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:0.5px;font-weight:500;}
 .x-label{bottom:6px;left:50%;transform:translateX(-50%);}
 .y-label{left:4px;top:50%;transform:translateY(-50%) rotate(-90deg);white-space:nowrap;}
 
 .right-panel{display:flex;flex-direction:column;gap:12px;}
+.pinned-card{background:var(--card);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:16px 20px;position:relative;}
+.pinned-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;background:linear-gradient(90deg,hsl(195,70%,55%),hsl(0,70%,45%));}
+.pinned-name{font-size:15px;font-weight:700;color:var(--white);margin-bottom:8px;}
+.pinned-detail{font-family:var(--mono);font-size:11px;color:var(--text);line-height:1.7;}
+.pinned-detail b{color:var(--offwhite);font-weight:600;}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;}
 .stat-card h3{font-size:11px;font-family:var(--mono);color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
 .gradient-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
@@ -50,16 +55,16 @@ canvas{display:block;width:100%;cursor:crosshair;}
 .gradient-pct{font-family:var(--mono);font-size:10px;color:var(--offwhite);width:32px;text-align:right;}
 
 .rho-card{padding:14px 20px;}
-.rho-label{font-size:12px;color:var(--text2);line-height:1.5;}
+.rho-label{font-size:13px;color:var(--text2);line-height:1.5;}
 .rho-inline{font-family:var(--mono);font-weight:700;color:var(--offwhite);}
-.rho-sub{font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:2px;}
+.rho-sub{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px;}
 
 .callout{background:rgba(251,113,133,0.05);border:1px solid rgba(251,113,133,0.15);border-radius:12px;padding:24px;}
 .callout p{color:var(--text);line-height:1.6;}
 .callout b{color:var(--offwhite);}
-.callout-lead{font-size:13px;margin-bottom:12px;}
-.callout-big{font-size:20px;font-weight:700;color:var(--white);line-height:1.35;margin-bottom:12px;}
-.callout-kicker{font-size:12px;color:var(--text2);}
+.callout-lead{font-size:15px;margin-bottom:12px;}
+.callout-big{font-size:15px;font-weight:700;color:var(--white);line-height:1.45;margin-bottom:12px;}
+.callout-kicker{font-size:15px;color:var(--text2);}
 
 .tip{position:fixed;pointer-events:none;background:rgba(12,17,24,0.95);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--offwhite);display:none;z-index:100;max-width:300px;backdrop-filter:blur(8px);}
 .tip-name{font-weight:700;margin-bottom:3px;}
@@ -104,6 +109,11 @@ canvas{display:block;width:100%;cursor:crosshair;}
     </div>
 
     <div class="right-panel">
+      <div class="pinned-card" id="pinnedCard" style="display:none;">
+        <div class="pinned-name" id="pinnedName"></div>
+        <div class="pinned-detail" id="pinnedDetail"></div>
+      </div>
+
       <div class="callout">
         <p class="callout-lead">D9–D10 hospitals are <b>3× more likely</b> to be outperforming their community risk profile while collecting below the national median.</p>
         <p class="callout-big">57% of the most rural hospitals are doing more and getting paid less. For urban hospitals, it's 18%.</p>
@@ -197,11 +207,11 @@ function draw(){
   for(let r=-5;r<=5;r++){if(r===0)continue;ctx.beginPath();ctx.moveTo(xScale(r),pad.t);ctx.lineTo(xScale(r),h-pad.b);ctx.stroke();}
   for(let g=-6000;g<=12000;g+=2000){if(g===0)continue;ctx.beginPath();ctx.moveTo(pad.l,yScale(g));ctx.lineTo(w-pad.r,yScale(g));ctx.stroke();}
 
-  ctx.font='500 9px "JetBrains Mono"';
+  ctx.font='500 11px "JetBrains Mono"';
   ctx.textAlign='center';
   for(let r=-6;r<=6;r++){
-    ctx.fillStyle=r===0?'rgba(255,255,255,0.5)':'rgba(255,255,255,0.22)';
-    ctx.fillText(r===0?'Expected':(r>0?'+':'')+r+'%',xScale(r),h-pad.b+14);
+    ctx.fillStyle=r===0?'rgba(255,255,255,0.6)':'rgba(255,255,255,0.35)';
+    ctx.fillText(r===0?'Expected':(r>0?'+':'')+r+'%',xScale(r),h-pad.b+16);
   }
   ctx.textAlign='right';
   for(let g=-6000;g<=14000;g+=2000){
@@ -209,13 +219,13 @@ function draw(){
     if(g===0) label='Median';
     else if(g>0) label='+$'+(g/1000)+'K';
     else label='-$'+(-g/1000)+'K';
-    ctx.fillStyle=g===0?'rgba(255,255,255,0.5)':'rgba(255,255,255,0.22)';
-    ctx.fillText(label,pad.l-4,yScale(g)+3);
+    ctx.fillStyle=g===0?'rgba(255,255,255,0.6)':'rgba(255,255,255,0.35)';
+    ctx.fillText(label,pad.l-4,yScale(g)+4);
   }
 
-  ctx.font='700 10px "JetBrains Mono"';
+  ctx.font='700 11px "JetBrains Mono"';
   ctx.textAlign='left';
-  ctx.fillStyle='rgba(251,113,133,0.5)';
+  ctx.fillStyle='rgba(251,113,133,0.55)';
   ctx.fillText('DOING MORE.',pad.l+8,h-pad.b-18);
   ctx.fillText('PAID LESS.',pad.l+8,h-pad.b-5);
   ctx.textAlign='right';
@@ -232,6 +242,24 @@ function draw(){
     const sz=Math.max(2.2,Math.min(6,Math.sqrt(p[2]/300)));
     ctx.fillStyle='hsla('+hu+','+sa+'%,'+lt+'%,0.5)';
     ctx.beginPath();ctx.arc(x,y,sz,0,Math.PI*2);ctx.fill();
+  }
+
+  // Draw pinned hospital marker (ring only, details in sidebar)
+  if(pinnedIdx>=0){
+    const p=P[pinnedIdx];
+    const px=xScale(p[0]),py=yScale(p[1]);
+    if(px>=pad.l&&px<=w-pad.r&&py>=pad.t&&py<=h-pad.b){
+      const [phu,psa,plt]=decileHSL(p[5]);
+      // Outer pulse
+      ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.arc(px,py,18,0,Math.PI*2);ctx.stroke();
+      // Inner ring
+      ctx.strokeStyle='rgba(255,255,255,0.85)';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(px,py,12,0,Math.PI*2);ctx.stroke();
+      // Dot
+      ctx.fillStyle='hsla('+phu+','+psa+'%,'+plt+'%,0.95)';
+      ctx.beginPath();ctx.arc(px,py,6,0,Math.PI*2);ctx.fill();
+    }
   }
 }
 
@@ -267,6 +295,37 @@ canvas.addEventListener('mousemove',function(e){
   }
 });
 canvas.addEventListener('mouseleave',function(){tip.style.display='none';if(lastHit>=0){lastHit=-1;draw();}});
+
+// Highlight hospital from URL param
+const urlParams=new URLSearchParams("?hospital=Tidalhealth Nanticoke, Inc.");
+const targetHosp=urlParams.get('hospital');
+let pinnedIdx=-1;
+if(targetHosp){
+  const t=targetHosp.toLowerCase();
+  for(let i=0;i<P.length;i++){
+    if(P[i][3].toLowerCase()===t){pinnedIdx=i;break;}
+  }
+  if(pinnedIdx<0){
+    for(let i=0;i<P.length;i++){
+      if(P[i][3].toLowerCase().includes(t)||t.includes(P[i][3].toLowerCase())){pinnedIdx=i;break;}
+    }
+  }
+}
+
+if(pinnedIdx>=0){
+  const p=P[pinnedIdx];
+  const card=document.getElementById('pinnedCard');
+  const gapStr=p[1]>=0?'+$'+p[1].toLocaleString():'-$'+(-p[1]).toLocaleString();
+  const perfStr=p[0]<0?Math.abs(p[0]).toFixed(1)+'% better than expected':p[0]>0?'+'+p[0].toFixed(1)+'% worse than expected':'at expected';
+  const quadrant=p[0]<0&&p[1]<0?'Doing more, paid less':p[0]<0&&p[1]>=0?'Outperforming, fairly paid':p[0]>=0&&p[1]<0?'Underperforming, underpaid':'Underperforming, overpaid';
+  document.getElementById('pinnedName').textContent=p[3]+', '+p[4];
+  document.getElementById('pinnedDetail').innerHTML=
+    '<b>GRI Decile '+p[5]+'</b> · '+p[2].toLocaleString()+' discharges<br>'+
+    'Mortality: <b>'+perfStr+'</b><br>'+
+    '$/case: <b>$'+p[6].toLocaleString()+'</b> ('+gapStr+' vs median)<br>'+
+    'Quadrant: <b>'+quadrant+'</b>';
+  card.style.display='block';
+}
 
 window.addEventListener('resize',resize);
 resize();
