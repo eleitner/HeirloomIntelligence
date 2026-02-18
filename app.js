@@ -80,8 +80,7 @@ function show(h){
     <div class="kpi"><div class="kl">Volume</div><div class="kv c-sky">${h.cs.toLocaleString()}</div><div class="ks">Medicare discharges</div></div>`;
   if(h.sv&&h.sv.overall!=null){
     const sc=h.sv.overall>0.7?'c-rose':h.sv.overall>0.4?'c-amber':'c-teal';
-    kh+=`<div class="kpi"><div class="kl">Vulnerability</div><div class="kv ${sc}">${(h.sv.overall*100).toFixed(0)}<small style="font-size:12px">th</small></div><div class="ks">CDC/ATSDR SVI</div></div>`;
-  }
+    kh+=`<div class="kpi"><div class="kl">Vulnerability</div><div class="kv ${sc}">${(h.sv.overall*100).toFixed(0)}<small style="font-size:12px">th</small></div><div class="ks">More vulnerable than ${(h.sv.overall*100).toFixed(0)}% of US communities</div></div>`;
   document.getElementById('kpis').innerHTML=kh;
 
   document.getElementById('gPin').style.left=((h.d-0.5)/10*100)+'%';
