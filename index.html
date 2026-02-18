@@ -4,17 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hospital Intelligence | Heirloom</title>
-<meta name="description" content="Search any US hospital. See quality scores, geographic risk, and community health — built from public federal data by Heirloom.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Know Your Hospital. Own Your Geography.">
-<meta property="og:description" content="Every hospital operates under geographic constraints CMS doesn't measure. We built the index that does. Search 3,403 hospitals.">
-<meta property="og:site_name" content="Heirloom Data">
-<meta property="og:url" content="https://heirloomdata.io/intelligence">
-<meta property="og:image" content="https://heirloomdata.io/og-intelligence.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Know Your Hospital. Own Your Geography.">
-<meta name="twitter:description" content="Geographic Risk Index for 3,403 US hospitals. Free tool from Heirloom Data.">
-<meta name="twitter:image" content="https://heirloomdata.io/og-intelligence.png">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%2314b8a6'/><text x='50' y='72' text-anchor='middle' font-size='60' font-weight='900' fill='%2306090f'>H</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -39,7 +28,6 @@
     <div class="dd" id="dd"></div>
   </div>
 </div>
-
 <div class="wrap">
 <div id="results" class="hidden">
   <div class="ph">
@@ -48,59 +36,48 @@
     <div class="badges" id="hB"></div>
   </div>
   <div class="kpis" id="kpis"></div>
-
   <div class="sec">
     <div class="sec-h"><div class="sec-ic" style="background:var(--teal-dim);color:var(--teal);">&#9670;</div><h3>Geographic Risk Position</h3></div>
     <div class="gri-bar"><div class="gri-pin" id="gPin"></div></div>
     <div class="gri-ax"><span>D1 · Major Urban</span><span>D5 · Suburban</span><span>D10 · Isolated Rural</span></div>
   </div>
-
   <div class="sec">
     <div class="sec-h"><div class="sec-ic" style="background:var(--rose-dim);color:var(--rose);">&#9829;</div><h3>Mortality vs Geographic Expectation</h3></div>
     <div class="mort-flex" id="mRow"></div>
     <div class="curve" id="curve"></div>
     <div style="text-align:center;font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:6px;">Mean composite mortality by GRI decile · N=3,403</div>
   </div>
-
   <div class="sec">
     <div class="sec-h"><div class="sec-ic" style="background:var(--sky-dim);color:var(--sky);">&#9733;</div><h3>CMS Quality Scores</h3></div>
     <div class="tabs" id="tabs"></div>
     <div id="sWrap"></div>
   </div>
-
   <div class="sec">
     <div class="sec-h"><div class="sec-ic" style="background:var(--emerald-dim);color:var(--emerald);">&#9673;</div><h3>Community Health Profile</h3></div>
     <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:12px;letter-spacing:0.5px;">ZIP-level prevalence. <span style="color:var(--white);">White</span> = US median. <span style="color:var(--teal);">Teal</span> = peer decile median. Source: CDC PLACES 2025.</div>
     <div class="bars" id="bars"></div>
   </div>
-
   <div id="sDrg" class="sec hidden">
     <div class="sec-h"><div class="sec-ic" style="background:var(--amber-dim);color:var(--amber);">&#9883;</div><h3>Top Surgical DRGs</h3></div>
     <div id="drgW"></div>
   </div>
-
-  <!-- CTA -->
   <div class="cta">
     <h3>This is your hospital's <span>geography</span>.<br>Now imagine what your <span>data</span> could do.</h3>
     <p>Everything above was built from public data. Imagine what we can see when your hospital's <span class="hl">actual operational data</span> is in the picture — missed revenue recovered, outcomes tracked, your patients finally <span class="hl">visible</span> in the national conversation.</p>
     <p style="margin-top:14px;">Heirloom partners with community hospitals to turn perioperative data into analytics, insights, and new revenue streams. <span class="hl">Zero upfront cost.</span> Your hospital owns its data. We grow together.</p>
-    <button class="cta-btn" id="ctaBtn">Let's Talk →</button>
+    <button class="cta-btn" id="ctaBtn">Let's Talk &#8594;</button>
     <div class="cta-fine">Free to join · Your hospital owns its data · Zero upfront cost · We grow together</div>
   </div>
-
-  <!-- Feedback -->
   <div style="text-align:center;padding:24px 20px 12px;">
     <div style="font-size:14px;color:var(--offwhite);font-weight:600;margin-bottom:6px;">Have a burning question? See a metric we're missing?</div>
-    <div style="font-size:13px;color:var(--text);line-height:1.7;max-width:460px;margin:0 auto;">We built this to start a conversation, not end one. Tell us what would make it more useful for your hospital. Let's build this together.</div>
+    <div style="font-size:13px;color:var(--text);line-height:1.7;max-width:460px;margin:0 auto;">We built this to start a conversation, not end one. Tell us what would make it more useful for your hospital.</div>
     <div style="margin-top:14px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
-      <a href="/cdn-cgi/l/email-protection#650013040b250d000c17090a0a08010411044b0c0a5a1610070f000611582d0a16150c1104094057552c0b110009090c02000b0600405755230000010704060e" style="font-family:var(--mono);font-size:12px;color:var(--teal);text-decoration:none;border:1px solid rgba(45,212,191,0.2);padding:7px 16px;border-radius:8px;"><span class="__cf_email__" data-cfemail="2e4b584f406e464b475c424141434a4f5a4f004741">[email&#160;protected]</span></a>
+      <a href="mailto:evan@heirloomdata.io?subject=Hospital%20Intelligence%20Feedback" style="font-family:var(--mono);font-size:12px;color:var(--teal);text-decoration:none;border:1px solid rgba(45,212,191,0.2);padding:7px 16px;border-radius:8px;">evan@heirloomdata.io</a>
       <a href="tel:+17349729930" style="font-family:var(--mono);font-size:12px;color:var(--text2);text-decoration:none;border:1px solid var(--border2);padding:7px 16px;border-radius:8px;">734-972-9930</a>
     </div>
   </div>
 </div>
 </div>
-
-<!-- MODAL -->
 <div class="overlay" id="overlay">
   <div class="modal" id="modal">
     <button class="modal-close" id="mClose">&times;</button>
@@ -131,7 +108,7 @@
           <label for="fAgree">I'd like to learn more about how Heirloom can help my hospital. I understand this is <b>not a commitment</b> — just a conversation starter.</label>
         </div>
         <button class="modal-submit" id="mSubmit" disabled>Start the Conversation</button>
-        <div class="modal-fine">Your information is never shared. Questions? <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dcb9aabdb29cb4b9b5aeb0b3b3b1b8bda8bdf2b5b3">[email&#160;protected]</a> · 734-972-9930</div>
+        <div class="modal-fine">Your information is never shared.</div>
       </div>
     </div>
     <div id="mOk" class="modal-ok" style="display:none;">
@@ -142,5 +119,11 @@
     </div>
   </div>
 </div>
-
-<div class="source"
+<div class="source">
+  CMS Hospital Compare 2025 · Medicare IPPS CY2023 · CDC PLACES 2025 · CDC/ATSDR SVI 2022 · USDA RUCA 2020<br>
+  Geographic Risk Index: <em>The Community Gap</em> · Heirloom Data Inc. 2026 · heirloomdata.io
+</div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
