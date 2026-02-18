@@ -78,7 +78,7 @@ function show(h){
     <div class="kpi"><div class="kl">Peer Rank</div><div class="kv ${pc}">${h.pp}<small style="font-size:12px">th</small></div><div class="ks">Among ${h.pn} D${h.d} hospitals</div></div>
     <div class="kpi"><div class="kl">$/Case</div><div class="kv ${pyc}">${ps}</div><div class="ks">${h.pmp?'Peer median: $'+h.pmp.toLocaleString():''}</div></div>
     <div class="kpi"><div class="kl">Volume</div><div class="kv c-sky">${h.cs.toLocaleString()}</div><div class="ks">Medicare discharges</div></div>`;
-  if(h.sv&&h.sv.overall!=null){
+  if(h.sv&&h.sv.overall!=null&&h.sv.overall>=0){
     const sc=h.sv.overall>0.7?'c-rose':h.sv.overall>0.4?'c-amber':'c-teal';
     kh+=`<div class="kpi"><div class="kl">Vulnerability</div><div class="kv ${sc}">${(h.sv.overall*100).toFixed(0)}<small style="font-size:12px">th</small></div><div class="ks">More vulnerable than ${(h.sv.overall*100).toFixed(0)}% of US communities</div></div>`;
   }
