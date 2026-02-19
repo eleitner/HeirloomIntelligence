@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Uninvited Gradient | Heirloom Data</title>
-<meta name="description" content="Neither axis measures geography. Yet GRI decile arranges itself along the diagonal with near-perfect monotonicity. Geography wasn't invited. It showed up anyway.">
+<title>The Geographic Penalty | Heirloom Data</title>
+<meta name="description" content="Same hospitals. Same payment. Different baseline. The measurement system flatters urban hospitals and punishes rural ones.">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -13,289 +13,184 @@
   --text:#8899aa;--text2:#667788;--text3:#445566;
   --offwhite:#e4e8ec;--white:#f8fafc;
   --mono:'JetBrains Mono',monospace;--sans:'DM Sans',sans-serif;
+  --teal:#2dd4bf;
 }
 body{background:var(--bg);color:var(--text);font-family:var(--sans);padding:0;overflow-x:hidden;}
-.container{max-width:1060px;margin:0 auto;padding:40px 24px 60px;}
+.container{max-width:960px;margin:0 auto;padding:40px 24px 60px;}
 .topnav{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;}
 .brand{display:inline-flex;align-items:center;gap:10px;opacity:0.85;}
 .brand img{height:48px;opacity:0.9;}
 .brand-text{font-size:24px;font-weight:700;color:#ea580c;letter-spacing:1.5px;text-transform:uppercase;}
-.nav-link{font-family:var(--mono);font-size:11px;color:var(--text3);text-decoration:none;letter-spacing:0.5px;border:1px solid var(--border);padding:6px 14px;border-radius:6px;transition:all 0.2s;}
+.nav-link{font-family:var(--mono);font-size:11px;color:var(--text3);text-decoration:none;letter-spacing:0.5px;border:1px solid var(--border);padding:6px 14px;border-radius:6px;}
 .nav-link:hover{color:var(--offwhite);border-color:rgba(255,255,255,0.15);}
 
-h1{font-size:28px;font-weight:800;color:var(--white);line-height:1.2;margin-bottom:6px;}
+h1{font-size:26px;font-weight:800;color:var(--white);line-height:1.2;margin-bottom:6px;}
 h1 span{color:#fb7185;}
-.subtitle{font-size:14px;color:var(--text);line-height:1.7;max-width:760px;margin-bottom:20px;}
 
-.legend{display:flex;gap:2px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.section-text{font-size:14px;color:var(--text);line-height:1.7;max-width:760px;margin-bottom:20px;}
+.section-text b{color:var(--offwhite);}
+
+.legend{display:flex;gap:2px;align-items:center;margin-bottom:8px;flex-wrap:wrap;}
 .legend-bar{width:28px;height:14px;border-radius:3px;}
 .legend-label{font-family:var(--mono);font-size:9px;color:var(--text3);margin:0 6px;}
 
-.panels{display:grid;grid-template-columns:1fr 320px;gap:16px;margin-bottom:24px;}
-@media(max-width:900px){.panels{grid-template-columns:1fr;}}
-
-.matrix-wrap{position:relative;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 20px 20px 72px;}
+.chart-wrap{position:relative;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 16px 16px 52px;margin-bottom:16px;}
+.chart-title{font-family:var(--mono);font-size:12px;text-align:center;margin-bottom:8px;letter-spacing:0.5px;line-height:1.5;}
 canvas{display:block;width:100%;cursor:crosshair;}
-.axis-label{position:absolute;font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:0.5px;font-weight:500;}
-.x-label{bottom:6px;left:50%;transform:translateX(-50%);}
-.y-label{left:4px;top:50%;transform:translateY(-50%) rotate(-90deg);white-space:nowrap;}
 
-.right-panel{display:flex;flex-direction:column;gap:12px;}
-.pinned-card{background:var(--card);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:16px 20px;position:relative;}
-.pinned-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;background:linear-gradient(90deg,hsl(195,70%,55%),hsl(0,70%,45%));}
-.pinned-name{font-size:15px;font-weight:700;color:var(--white);margin-bottom:8px;}
-.pinned-detail{font-family:var(--mono);font-size:11px;color:var(--text);line-height:1.7;}
-.pinned-detail b{color:var(--offwhite);font-weight:600;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;}
-.stat-card h3{font-size:11px;font-family:var(--mono);color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
-.gradient-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
-.gradient-label{font-family:var(--mono);font-size:10px;color:var(--text2);width:28px;text-align:right;}
-.gradient-bar-wrap{flex:1;height:15px;background:rgba(255,255,255,0.03);border-radius:4px;overflow:hidden;}
-.gradient-bar{height:100%;border-radius:4px;}
-.gradient-pct{font-family:var(--mono);font-size:10px;color:var(--offwhite);width:32px;text-align:right;}
-
-.rho-card{padding:14px 20px;}
-.rho-label{font-size:13px;color:var(--text2);line-height:1.5;}
-.rho-inline{font-family:var(--mono);font-weight:700;color:var(--offwhite);}
-.rho-sub{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px;}
-
-.callout{background:rgba(251,113,133,0.05);border:1px solid rgba(251,113,133,0.15);border-radius:12px;padding:24px;}
-.callout p{color:var(--text);line-height:1.6;}
+.callout{border-radius:12px;padding:20px;margin-bottom:20px;}
+.callout p{line-height:1.6;}
 .callout b{color:var(--offwhite);}
-.callout-lead{font-size:15px;margin-bottom:12px;}
-.callout-big{font-size:15px;font-weight:700;color:var(--white);line-height:1.45;margin-bottom:12px;}
-.callout-kicker{font-size:15px;color:var(--text2);}
+.callout-lead{font-size:14px;color:var(--text);margin-bottom:8px;}
+.callout-big{font-size:14px;font-weight:700;color:var(--white);line-height:1.45;margin-bottom:8px;}
+.callout-kicker{font-size:14px;color:var(--text2);}
+.callout-amber{background:rgba(200,180,120,0.04);border:1px solid rgba(200,180,120,0.12);}
+.callout-teal{background:rgba(45,212,191,0.04);border:1px solid rgba(45,212,191,0.12);}
+.callout-rose{background:rgba(251,113,133,0.04);border:1px solid rgba(251,113,133,0.12);}
 
-.tip{position:fixed;pointer-events:none;background:rgba(12,17,24,0.95);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--offwhite);display:none;z-index:100;max-width:300px;backdrop-filter:blur(8px);}
-.tip-name{font-weight:700;margin-bottom:3px;}
+.stats-row{display:grid;grid-template-columns:1fr 280px;gap:12px;margin-bottom:20px;}
+@media(max-width:760px){.stats-row{grid-template-columns:1fr;}}
+
+.pinned-card{background:var(--card);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:16px 20px;position:relative;margin-bottom:16px;}
+.pinned-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;background:linear-gradient(90deg,hsl(195,70%,55%),hsl(0,70%,45%));}
+.pinned-name{font-size:14px;font-weight:700;color:var(--white);margin-bottom:6px;}
+.pinned-detail{font-family:var(--mono);font-size:10px;color:var(--text);line-height:1.7;}
+.pinned-detail b{color:var(--offwhite);font-weight:600;}
+
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.stat-card h3{font-size:10px;font-family:var(--mono);color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+.rho-card{padding:12px 16px;margin-top:12px;}
+.rho-label{font-size:12px;color:var(--text2);line-height:1.5;}
+.rho-inline{font-family:var(--mono);font-weight:700;color:var(--offwhite);}
+.rho-sub{font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:2px;}
+
+.tip{display:none;position:fixed;background:var(--card);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px 16px;pointer-events:none;z-index:99;max-width:280px;}
+.tip-name{font-weight:700;color:var(--white);font-size:13px;margin-bottom:4px;}
 .tip-detail{font-family:var(--mono);font-size:10px;color:var(--text);line-height:1.6;}
 
-.source{text-align:center;font-family:var(--mono);font-size:9px;color:var(--text3);padding:12px 20px;letter-spacing:0.3px;line-height:1.8;}
+.source{font-family:var(--mono);font-size:9px;color:var(--text3);text-align:center;line-height:1.8;margin-top:24px;}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="topnav">
-    <div class="brand">
-      <img src="logo.png" alt="">
-      <span class="brand-text">HEIRLOOM DATA</span>
-    </div>
-    <a href="index.html" class="nav-link">← Hospital Intelligence Tool</a>
+
+  <!-- NAV -->
+  <nav class="topnav">
+    <a href="index.html" class="brand" style="text-decoration:none;">
+      <img src="logo.png" alt="Heirloom">
+      <div class="brand-text">Heirloom Data</div>
+    </a>
+    <a href="index.html" class="nav-link">← Hospital Search</a>
+  </nav>
+
+  <!-- 1. TITLE -->
+  <h1>Same Hospitals. Same Payment. <span>Different Lens.</span></h1>
+
+  <!-- 2. GRI COMMENTARY -->
+  <p class="section-text" style="margin-top:12px;">
+    The Geographic Risk Index (GRI) scores every US hospital's community on 18 dimensions — chronic disease, poverty, insurance gaps, provider access, isolation. It explains <b>60.5% of the variance</b> in hospital mortality before a single patient is treated. What follows are two views of the same 2,490 hospitals. The y-axis — Medicare payment per case vs the national median — is identical in both. Only the x-axis changes: what we compare mortality <em>to</em>.
+  </p>
+
+  <!-- 3. LEGEND -->
+  <div class="legend" id="legend"></div>
+
+  <!-- 4. NATIONAL MEAN SCATTER -->
+  <div class="chart-wrap">
+    <div class="chart-title" style="color:var(--text3);">Current model: mortality vs <b style="color:var(--text2);">US national mean</b></div>
+    <canvas id="canvasNat" height="520"></canvas>
   </div>
 
-  <h1>The Uninvited <span>Gradient</span></h1>
-  <p class="subtitle">Neither axis measures geography. X-axis: mortality performance vs community-adjusted expectation. Y-axis: Medicare reimbursement per case vs national median. Dot color shows GRI decile — it was never asked to organize. It did anyway.</p>
-
-  <div class="legend">
-    <span class="legend-label">D1 Urban</span>
-    <div class="legend-bar" style="background:hsl(195,70%,55%);"></div>
-    <div class="legend-bar" style="background:hsl(180,65%,50%);"></div>
-    <div class="legend-bar" style="background:hsl(160,60%,48%);"></div>
-    <div class="legend-bar" style="background:hsl(130,50%,46%);"></div>
-    <div class="legend-bar" style="background:hsl(90,50%,46%);"></div>
-    <div class="legend-bar" style="background:hsl(55,55%,48%);"></div>
-    <div class="legend-bar" style="background:hsl(38,60%,50%);"></div>
-    <div class="legend-bar" style="background:hsl(20,65%,50%);"></div>
-    <div class="legend-bar" style="background:hsl(8,65%,50%);"></div>
-    <div class="legend-bar" style="background:hsl(0,70%,45%);"></div>
-    <span class="legend-label">D10 Rural</span>
+  <!-- 5. NATIONAL MEAN DESCRIPTOR -->
+  <div class="callout callout-amber">
+    <p class="callout-lead">Under the current model, the system rewards hospitals that are already winning.</p>
+    <p class="callout-big">65% of large urban hospitals (D1, Q5) land in the "better mortality, paid more" quadrant. For small rural hospitals (D10, Q1): 1%.</p>
+    <p class="callout-lead">The bigger the hospital, the better it looks on mortality (<b>r = −0.61</b>). The more rural the community, the less it gets paid (<b>r = −0.27</b>). These are independent forces — size and geography — but they compound against the same hospitals.</p>
+    <p class="callout-big" style="margin-top:8px;">Hospitals can't choose their catchment population. The communities with the greatest burden are served by the hospitals the measurement system is most designed to punish.</p>
   </div>
 
-  <div class="panels">
-    <div class="matrix-wrap">
-      <canvas id="scatter" height="600"></canvas>
-      <div class="axis-label x-label">← Worse than expected &nbsp;&nbsp; MORTALITY &nbsp;&nbsp; Better than expected →</div>
-      <div class="axis-label y-label">← Below median &nbsp;&nbsp; MEDICARE $/CASE &nbsp;&nbsp; Above median →</div>
+  <!-- PINNED HOSPITAL -->
+  <div id="pinnedCard" class="pinned-card" style="display:none;">
+    <div class="pinned-name" id="pinnedName"></div>
+    <div class="pinned-detail" id="pinnedDetail"></div>
+  </div>
+
+  <!-- 6. GRI-ADJUSTED SCATTER -->
+  <div class="chart-wrap" style="border-color:rgba(45,212,191,0.15);">
+    <div class="chart-title" style="color:var(--teal);">Proposed: mortality vs <b style="color:var(--white);">peer expectation (GRI-adjusted)</b></div>
+    <canvas id="canvasGRI" height="520"></canvas>
+  </div>
+
+  <!-- 7. GRI DESCRIPTOR -->
+  <div class="callout callout-teal">
+    <p class="callout-lead">Adjust for community burden and the gradient flips. D9–D10 hospitals are <b>3× more likely</b> to be outperforming their peer expectation while collecting below the national median.</p>
+    <p class="callout-big">57% of the most rural hospitals are doing more and getting paid less. For urban hospitals, it's 18%.</p>
+    <p class="callout-kicker">The GRI was built to predict mortality. Medicare payment has no geographic input. <b>The GRI predicts that too.</b></p>
+  </div>
+
+  <!-- 8. POLICY -->
+  <div class="callout callout-rose">
+    <p class="callout-big">These communities can't fix a proven geographic effect. Their hospitals can't choose an easier catchment. So why does the measurement system punish them for it — and then pay them less?</p>
+    <p class="callout-kicker">The people in these communities need more resources, not fewer. A GRI adjustment doesn't change how much Medicare spends. It changes <b>where it goes</b>.</p>
+  </div>
+
+  <!-- 9. PEARSON / STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <h3>% Outperforming Peers and Underpaid</h3>
+      <div id="gradientBars"></div>
     </div>
-
-    <div class="right-panel">
-      <div class="pinned-card" id="pinnedCard" style="display:none;">
-        <div class="pinned-name" id="pinnedName"></div>
-        <div class="pinned-detail" id="pinnedDetail"></div>
-      </div>
-
-      <div class="callout">
-        <p class="callout-lead">D9–D10 hospitals are <b>3× more likely</b> to be outperforming their community risk profile while collecting below the national median.</p>
-        <p class="callout-big">57% of the most rural hospitals are doing more and getting paid less. For urban hospitals, it's 18%.</p>
-        <p class="callout-kicker">Neither axis encodes geography. The GRI was built to predict mortality. <b>It also predicts who gets paid.</b></p>
-      </div>
-
-      <div class="stat-card">
-        <h3>% "Doing more, paid less" by GRI decile</h3>
-        <div id="gradientBars"></div>
-      </div>
-
+    <div>
       <div class="stat-card rho-card">
         <div class="rho-label">Spearman ρ = <span class="rho-inline">0.957</span></div>
-        <div class="rho-sub">GRI decile vs bottom-left quadrant membership · monotonic across all 10 deciles</div>
+        <div class="rho-sub">GRI decile vs "outperforming + underpaid" quadrant · monotonic across all 10 deciles</div>
       </div>
     </div>
   </div>
 
+  <!-- SOURCE -->
   <div class="source">
     N=2,490 (4% extreme outliers trimmed) · CMS Hospital Compare 2025 · Medicare IPPS CY2023<br>
-    National median $/case: $11,562 · X: Actual − GRI-expected composite mortality · Y: $/case − national median<br>
-    Dot color: GRI decile (blue/teal = urban → orange/red = rural) · Geography was not encoded in either axis.<br>
-    809 hospitals (predominantly Critical Access, avg residual +2.3%) excluded — no DRG-based payment data.<br>
+    National median $/case: $11,562 · Dot color: GRI decile (blue/teal = urban → orange/red = rural)<br>
+    Payment axis has no geographic input. 809 hospitals (predominantly Critical Access, avg residual +2.3%) excluded — no DRG-based payment data.<br>
     Heirloom Data 2026
   </div>
+
 </div>
 
 <div class="tip" id="tip"><div class="tip-name" id="tipN"></div><div class="tip-detail" id="tipD"></div></div>
 
 <script src="penalty-data.js"></script>
 <script>
-const GRI_BL=[18,21,26,35,32,32,36,40,57,57];
-const hues=[195,180,160,130,90,55,38,20,8,0];
-const sats=[70,65,60,50,50,55,60,65,65,70];
-const lts=[55,50,48,46,46,48,50,50,50,45];
-
-const barsEl=document.getElementById('gradientBars');
-for(let i=0;i<10;i++){
-  const row=document.createElement('div');
-  row.className='gradient-row';
-  row.innerHTML='<div class="gradient-label">D'+(i+1)+'</div><div class="gradient-bar-wrap"><div class="gradient-bar" style="width:'+GRI_BL[i]+'%;background:hsla('+hues[i]+','+sats[i]+'%,'+lts[i]+'%,0.75);"></div></div><div class="gradient-pct">'+GRI_BL[i]+'%</div>';
-  barsEl.appendChild(row);
-}
-
-const canvas=document.getElementById('scatter');
-const ctx=canvas.getContext('2d');
+const dpr=window.devicePixelRatio||1;
+const canvasNat=document.getElementById('canvasNat');
+const canvasGRI=document.getElementById('canvasGRI');
+const ctxNat=canvasNat.getContext('2d');
+const ctxGRI=canvasGRI.getContext('2d');
 const tip=document.getElementById('tip');
 const tipN=document.getElementById('tipN');
 const tipD=document.getElementById('tipD');
-const dpr=window.devicePixelRatio||1;
-const pad={t:24,r:24,b:44,l:24};
+
 const xMin=-6,xMax=6,yMin=-7000,yMax=14000;
+const pad={t:16,r:16,b:36,l:48};
 
-function decileHSL(d){const i=Math.max(0,Math.min(9,d-1));return[hues[i],sats[i],lts[i]];}
+function xScale(r,c){const w=c.width/dpr;return pad.l+(r-xMin)/(xMax-xMin)*(w-pad.l-pad.r);}
+function yScale(g,c){const h=c.height/dpr;return h-pad.b-(g-yMin)/(yMax-yMin)*(h-pad.t-pad.b);}
 
-function resize(){
-  const rect=canvas.parentElement.getBoundingClientRect();
-  const w=rect.width-96;
-  canvas.style.width=w+'px';
-  canvas.width=w*dpr;
-  canvas.height=600*dpr;
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-  draw();
+function decileHSL(d){
+  const t=Math.max(0,Math.min(1,(d-1)/9));
+  return [195-195*t, 70, 55-10*t];
 }
 
-function xScale(r){const w=canvas.width/dpr;return pad.l+(r-xMin)/(xMax-xMin)*(w-pad.l-pad.r);}
-function yScale(g){const h=canvas.height/dpr;return h-pad.b-(g-yMin)/(yMax-yMin)*(h-pad.t-pad.b);}
-
-function draw(){
-  const w=canvas.width/dpr,h=canvas.height/dpr;
-  ctx.clearRect(0,0,w,h);
-  const zeroX=xScale(0),zeroY=yScale(0);
-
-  ctx.fillStyle='rgba(200,180,120,0.015)';
-  ctx.fillRect(pad.l,zeroY,zeroX-pad.l,h-pad.b-zeroY);
-  ctx.fillStyle='rgba(251,113,133,0.03)';
-  ctx.fillRect(zeroX,zeroY,w-pad.r-zeroX,h-pad.b-zeroY);
-  ctx.fillStyle='rgba(45,212,191,0.02)';
-  ctx.fillRect(pad.l,pad.t,zeroX-pad.l,zeroY-pad.t);
-  ctx.fillStyle='rgba(100,160,220,0.02)';
-  ctx.fillRect(zeroX,pad.t,w-pad.r-zeroX,zeroY-pad.t);
-
-  ctx.strokeStyle='rgba(255,255,255,0.18)';
-  ctx.lineWidth=1;ctx.setLineDash([5,4]);
-  ctx.beginPath();ctx.moveTo(zeroX,pad.t);ctx.lineTo(zeroX,h-pad.b);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(pad.l,zeroY);ctx.lineTo(w-pad.r,zeroY);ctx.stroke();
-  ctx.setLineDash([]);
-
-  ctx.strokeStyle='rgba(255,255,255,0.03)';
-  for(let r=-5;r<=5;r++){if(r===0)continue;ctx.beginPath();ctx.moveTo(xScale(r),pad.t);ctx.lineTo(xScale(r),h-pad.b);ctx.stroke();}
-  for(let g=-6000;g<=12000;g+=2000){if(g===0)continue;ctx.beginPath();ctx.moveTo(pad.l,yScale(g));ctx.lineTo(w-pad.r,yScale(g));ctx.stroke();}
-
-  ctx.font='500 11px "JetBrains Mono"';
-  ctx.textAlign='center';
-  for(let r=-6;r<=6;r++){
-    ctx.fillStyle=r===0?'rgba(255,255,255,0.6)':'rgba(255,255,255,0.35)';
-    ctx.fillText(r===0?'Expected':(r>0?'+':'')+r+'%',xScale(r),h-pad.b+16);
-  }
-  ctx.textAlign='right';
-  for(let g=-6000;g<=14000;g+=2000){
-    let label;
-    if(g===0) label='Median';
-    else if(g>0) label='+$'+(g/1000)+'K';
-    else label='-$'+(-g/1000)+'K';
-    ctx.fillStyle=g===0?'rgba(255,255,255,0.6)':'rgba(255,255,255,0.35)';
-    ctx.fillText(label,pad.l-4,yScale(g)+4);
-  }
-
-  ctx.font='700 11px "JetBrains Mono"';
-  ctx.textAlign='right';
-  ctx.fillStyle='rgba(251,113,133,0.55)';
-  ctx.fillText('DOING MORE.',w-pad.r-8,h-pad.b-18);
-  ctx.fillText('PAID LESS.',w-pad.r-8,h-pad.b-5);
-  ctx.textAlign='left';
-  ctx.fillStyle='rgba(45,212,191,0.35)';
-  ctx.fillText('DOING LESS.',pad.l+8,pad.t+16);
-  ctx.fillText('PAID MORE.',pad.l+8,pad.t+29);
-
-  const sorted=[...Array(P.length).keys()].sort((a,b)=>P[b][2]-P[a][2]);
-  for(const i of sorted){
-    const p=P[i];
-    const x=xScale(-p[0]),y=yScale(p[1]);
-    if(x<pad.l-2||x>w-pad.r+2||y<pad.t-2||y>h-pad.b+2) continue;
-    const [hu,sa,lt]=decileHSL(p[5]);
-    const sz=Math.max(2.2,Math.min(6,Math.sqrt(p[2]/300)));
-    ctx.fillStyle='hsla('+hu+','+sa+'%,'+lt+'%,0.5)';
-    ctx.beginPath();ctx.arc(x,y,sz,0,Math.PI*2);ctx.fill();
-  }
-
-  // Draw pinned hospital marker (ring only, details in sidebar)
-  if(pinnedIdx>=0){
-    const p=P[pinnedIdx];
-    const px=xScale(-p[0]),py=yScale(p[1]);
-    if(px>=pad.l&&px<=w-pad.r&&py>=pad.t&&py<=h-pad.b){
-      const [phu,psa,plt]=decileHSL(p[5]);
-      // Outer pulse
-      ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=1.5;
-      ctx.beginPath();ctx.arc(px,py,18,0,Math.PI*2);ctx.stroke();
-      // Inner ring
-      ctx.strokeStyle='rgba(255,255,255,0.85)';ctx.lineWidth=2;
-      ctx.beginPath();ctx.arc(px,py,12,0,Math.PI*2);ctx.stroke();
-      // Dot
-      ctx.fillStyle='hsla('+phu+','+psa+'%,'+plt+'%,0.95)';
-      ctx.beginPath();ctx.arc(px,py,6,0,Math.PI*2);ctx.fill();
-    }
-  }
+// Legend
+const lg=document.getElementById('legend');
+for(let d=1;d<=10;d++){
+  if(d===1){const l=document.createElement('span');l.className='legend-label';l.textContent='Urban';lg.appendChild(l);}
+  const b=document.createElement('div');b.className='legend-bar';
+  const [h,s,lt]=decileHSL(d);b.style.background='hsl('+h+','+s+'%,'+lt+'%)';lg.appendChild(b);
+  if(d===10){const l=document.createElement('span');l.className='legend-label';l.textContent='Rural';lg.appendChild(l);}
 }
 
-let lastHit=-1;
-canvas.addEventListener('mousemove',function(e){
-  const rect=canvas.getBoundingClientRect();
-  const mx=e.clientX-rect.left,my=e.clientY-rect.top;
-  let closest=-1,closestDist=Infinity;
-  for(let i=0;i<P.length;i++){
-    const x=xScale(-P[i][0]),y=yScale(P[i][1]);
-    const dx=mx-x,dy=my-y,dist=dx*dx+dy*dy;
-    if(dist<closestDist&&dist<300){closestDist=dist;closest=i;}
-  }
-  if(closest>=0){
-    const p=P[closest];
-    tipN.textContent=p[3]+', '+p[4];
-    const gapStr=p[1]>=0?'+$'+p[1].toLocaleString():'-$'+(-p[1]).toLocaleString();
-    tipD.innerHTML='GRI Decile '+p[5]+' · '+((-p[0])>=0?'+':'')+(-p[0]).toFixed(1)+'% vs expected<br>$'+p[6].toLocaleString()+'/case ('+gapStr+' vs median)<br>'+p[2].toLocaleString()+' Medicare discharges';
-    tip.style.display='block';
-    tip.style.left=Math.min(e.clientX+14,window.innerWidth-300)+'px';
-    tip.style.top=(e.clientY-50)+'px';
-    if(closest!==lastHit){lastHit=closest;draw();
-      const x=xScale(-p[0]),y=yScale(p[1]);
-      const [hu,sa,lt]=decileHSL(p[5]);
-      ctx.fillStyle='hsla('+hu+','+sa+'%,'+lt+'%,0.95)';
-      ctx.beginPath();ctx.arc(x,y,8,0,Math.PI*2);ctx.fill();
-      ctx.strokeStyle='hsla('+hu+','+sa+'%,'+(lt+15)+'%,1)';ctx.lineWidth=2;
-      ctx.beginPath();ctx.arc(x,y,10,0,Math.PI*2);ctx.stroke();
-    }
-  }else{
-    tip.style.display='none';
-    if(lastHit>=0){lastHit=-1;draw();}
-  }
-});
-canvas.addEventListener('mouseleave',function(){tip.style.display='none';if(lastHit>=0){lastHit=-1;draw();}});
-
-// Highlight hospital from URL param
+// Pinned hospital
 const urlParams=new URLSearchParams(window.location.search);
 const targetHosp=urlParams.get('hospital');
 let pinnedIdx=-1;
@@ -313,18 +208,174 @@ if(targetHosp){
 
 if(pinnedIdx>=0){
   const p=P[pinnedIdx];
-  const card=document.getElementById('pinnedCard');
   const gapStr=p[1]>=0?'+$'+p[1].toLocaleString():'-$'+(-p[1]).toLocaleString();
-  const perfStr=p[0]<0?Math.abs(p[0]).toFixed(1)+'% better than expected':p[0]>0?'+'+p[0].toFixed(1)+'% worse than expected':'at expected';
-  const quadrant=p[0]<0&&p[1]<0?'Doing more, paid less':p[0]<0&&p[1]>=0?'Outperforming, fairly paid':p[0]>=0&&p[1]<0?'Underperforming, underpaid':'Underperforming, overpaid';
+  const natPerf=p[7]<0?Math.abs(p[7]).toFixed(1)+'% better than US mean':'+'+p[7].toFixed(1)+'% worse than US mean';
+  const griPerf=p[0]<0?Math.abs(p[0]).toFixed(1)+'% better than peer expectation':'+'+p[0].toFixed(1)+'% worse than peer expectation';
   document.getElementById('pinnedName').textContent=p[3]+', '+p[4];
   document.getElementById('pinnedDetail').innerHTML=
     '<b>GRI Decile '+p[5]+'</b> · '+p[2].toLocaleString()+' discharges<br>'+
-    'Mortality: <b>'+perfStr+'</b><br>'+
-    '$/case: <b>$'+p[6].toLocaleString()+'</b> ('+gapStr+' vs median)<br>'+
-    'Quadrant: <b>'+quadrant+'</b>';
-  card.style.display='block';
+    'vs US mean: <b>'+natPerf+'</b><br>'+
+    'vs peer expectation: <b>'+griPerf+'</b><br>'+
+    '$/case: <b>$'+p[6].toLocaleString()+'</b> ('+gapStr+' vs median)';
+  document.getElementById('pinnedCard').style.display='block';
 }
+
+function drawPanel(canvas, ctx, residIdx){
+  const w=canvas.width/dpr, h=canvas.height/dpr;
+  ctx.clearRect(0,0,w,h);
+  const zeroX=xScale(0,canvas), zeroY=yScale(0,canvas);
+
+  // Quadrant tints
+  ctx.fillStyle='rgba(200,180,120,0.015)';
+  ctx.fillRect(pad.l,zeroY,zeroX-pad.l,h-pad.b-zeroY);
+  ctx.fillStyle='rgba(251,113,133,0.03)';
+  ctx.fillRect(zeroX,zeroY,w-pad.r-zeroX,h-pad.b-zeroY);
+  ctx.fillStyle='rgba(45,212,191,0.02)';
+  ctx.fillRect(pad.l,pad.t,zeroX-pad.l,zeroY-pad.t);
+  ctx.fillStyle='rgba(100,160,220,0.02)';
+  ctx.fillRect(zeroX,pad.t,w-pad.r-zeroX,zeroY-pad.t);
+
+  // Zero lines
+  ctx.strokeStyle='rgba(255,255,255,0.18)';ctx.lineWidth=1;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(zeroX,pad.t);ctx.lineTo(zeroX,h-pad.b);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(pad.l,zeroY);ctx.lineTo(w-pad.r,zeroY);ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,0.03)';
+  for(let r=-5;r<=5;r++){if(r===0)continue;ctx.beginPath();ctx.moveTo(xScale(r,canvas),pad.t);ctx.lineTo(xScale(r,canvas),h-pad.b);ctx.stroke();}
+  for(let g=-6000;g<=12000;g+=2000){if(g===0)continue;ctx.beginPath();ctx.moveTo(pad.l,yScale(g,canvas));ctx.lineTo(w-pad.r,yScale(g,canvas));ctx.stroke();}
+
+  // X ticks
+  ctx.font='500 10px "JetBrains Mono"';ctx.textAlign='center';
+  for(let r=-6;r<=6;r+=2){
+    ctx.fillStyle=r===0?'rgba(255,255,255,0.6)':'rgba(255,255,255,0.3)';
+    ctx.fillText(r===0?'0':Math.abs(r)+'%',xScale(r,canvas),h-pad.b+14);
+  }
+  // Y ticks
+  ctx.textAlign='right';
+  for(let g=-6000;g<=14000;g+=4000){
+    let label;
+    if(g===0) label='Median';
+    else if(g>0) label='+$'+(g/1000)+'K';
+    else label='-$'+(-g/1000)+'K';
+    ctx.fillStyle=g===0?'rgba(255,255,255,0.6)':'rgba(255,255,255,0.3)';
+    ctx.fillText(label,pad.l-4,yScale(g,canvas)+4);
+  }
+  // Edge labels
+  ctx.font='600 9px "JetBrains Mono"';ctx.fillStyle='rgba(255,255,255,0.25)';
+  ctx.textAlign='left';ctx.fillText('WORSE',pad.l+2,h-pad.b+26);
+  ctx.textAlign='right';ctx.fillText('BETTER',w-pad.r-2,h-pad.b+26);
+  // Y edge
+  ctx.save();ctx.translate(12,h-pad.b-4);ctx.rotate(-Math.PI/2);
+  ctx.textAlign='left';ctx.fillText('PAID LESS',0,0);ctx.restore();
+  ctx.save();ctx.translate(12,pad.t+4);ctx.rotate(-Math.PI/2);
+  ctx.textAlign='right';ctx.fillText('PAID MORE',0,0);ctx.restore();
+
+  // Dots
+  const sorted=[...Array(P.length).keys()].sort((a,b)=>P[b][2]-P[a][2]);
+  for(const i of sorted){
+    const p=P[i];
+    const resid=residIdx===7?p[7]:p[0];
+    const x=xScale(-resid,canvas),y=yScale(p[1],canvas);
+    if(x<pad.l-2||x>w-pad.r+2||y<pad.t-2||y>h-pad.b+2) continue;
+    const [hu,sa,lt]=decileHSL(p[5]);
+    const sz=Math.max(1.8,Math.min(5.5,Math.sqrt(p[2]/350)));
+    ctx.fillStyle='hsla('+hu+','+sa+'%,'+lt+'%,0.5)';
+    ctx.beginPath();ctx.arc(x,y,sz,0,Math.PI*2);ctx.fill();
+  }
+
+  // Pinned
+  if(pinnedIdx>=0){
+    const p=P[pinnedIdx];
+    const resid=residIdx===7?p[7]:p[0];
+    const px=xScale(-resid,canvas),py=yScale(p[1],canvas);
+    if(px>=pad.l&&px<=w-pad.r&&py>=pad.t&&py<=h-pad.b){
+      ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.arc(px,py,16,0,Math.PI*2);ctx.stroke();
+      ctx.strokeStyle='rgba(255,255,255,0.85)';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(px,py,10,0,Math.PI*2);ctx.stroke();
+      const [phu,psa,plt]=decileHSL(p[5]);
+      ctx.fillStyle='hsla('+phu+','+psa+'%,'+plt+'%,0.95)';
+      ctx.beginPath();ctx.arc(px,py,5,0,Math.PI*2);ctx.fill();
+    }
+  }
+}
+
+function draw(){
+  drawPanel(canvasNat, ctxNat, 7);
+  drawPanel(canvasGRI, ctxGRI, 0);
+}
+
+function resizeCanvas(canvas){
+  const w=canvas.parentElement.clientWidth - 52 - 16;
+  canvas.width=w*dpr;canvas.height=520*dpr;
+  canvas.style.width=w+'px';canvas.style.height='520px';
+  canvas.getContext('2d').scale(dpr,dpr);
+}
+function resize(){resizeCanvas(canvasNat);resizeCanvas(canvasGRI);draw();}
+
+// Hover
+let lastHit=-1;
+[[canvasNat,7],[canvasGRI,0]].forEach(([canvas,residIdx])=>{
+  canvas.addEventListener('mousemove',function(e){
+    const rect=canvas.getBoundingClientRect();
+    const mx=e.clientX-rect.left, my=e.clientY-rect.top;
+    let closest=-1, closestDist=Infinity;
+    for(let i=0;i<P.length;i++){
+      const resid=residIdx===7?P[i][7]:P[i][0];
+      const x=xScale(-resid,canvas),y=yScale(P[i][1],canvas);
+      const dx=mx-x,dy=my-y,dist=dx*dx+dy*dy;
+      if(dist<closestDist&&dist<300){closestDist=dist;closest=i;}
+    }
+    if(closest>=0){
+      const p=P[closest];
+      tipN.textContent=p[3]+', '+p[4];
+      const gapStr=p[1]>=0?'+$'+p[1].toLocaleString():'-$'+(-p[1]).toLocaleString();
+      const natPerf=p[7]<0?Math.abs(p[7]).toFixed(1)+'% better than US mean':p[7].toFixed(1)+'% worse than US mean';
+      const griPerf=p[0]<0?Math.abs(p[0]).toFixed(1)+'% better than peers':Math.abs(p[0]).toFixed(1)+'% worse than peers';
+      tipD.innerHTML='GRI Decile '+p[5]+' · '+p[2].toLocaleString()+' discharges<br>vs US mean: '+natPerf+'<br>vs peers: '+griPerf+'<br>$'+p[6].toLocaleString()+'/case ('+gapStr+')';
+      tip.style.display='block';
+      tip.style.left=Math.min(e.clientX+14,window.innerWidth-300)+'px';
+      tip.style.top=(e.clientY-60)+'px';
+      if(closest!==lastHit){lastHit=closest;draw();
+        const [hu,sa,lt]=decileHSL(p[5]);
+        [[canvasNat,7],[canvasGRI,0]].forEach(([hc,ri])=>{
+          const hctx=hc.getContext('2d');
+          const hr=ri===7?p[7]:p[0];
+          const hx=xScale(-hr,hc),hy=yScale(p[1],hc);
+          hctx.fillStyle='hsla('+hu+','+sa+'%,'+lt+'%,0.95)';
+          hctx.beginPath();hctx.arc(hx,hy,6,0,Math.PI*2);hctx.fill();
+          hctx.strokeStyle='hsla('+hu+','+sa+'%,'+(lt+15)+'%,1)';hctx.lineWidth=2;
+          hctx.beginPath();hctx.arc(hx,hy,8,0,Math.PI*2);hctx.stroke();
+        });
+      }
+    }else{tip.style.display='none';if(lastHit>=0){lastHit=-1;draw();}}
+  });
+  canvas.addEventListener('mouseleave',function(){tip.style.display='none';if(lastHit>=0){lastHit=-1;draw();}});
+});
+
+// Gradient bars
+const barDiv=document.getElementById('gradientBars');
+const barData=[[1,18],[2,21],[3,26],[4,35],[5,32],[6,32],[7,36],[8,40],[9,57],[10,57]];
+barData.forEach(([d,pct])=>{
+  const row=document.createElement('div');
+  row.style.cssText='display:flex;align-items:center;gap:6px;margin-bottom:3px;';
+  const label=document.createElement('span');
+  label.style.cssText='font-family:var(--mono);font-size:9px;color:var(--text3);width:22px;text-align:right;';
+  label.textContent='D'+d;
+  const track=document.createElement('div');
+  track.style.cssText='flex:1;height:10px;background:rgba(255,255,255,0.03);border-radius:4px;overflow:hidden;';
+  const fill=document.createElement('div');
+  const [h,s,l]=decileHSL(d);
+  fill.style.cssText='height:100%;border-radius:4px;background:hsla('+h+','+s+'%,'+l+'%,0.7);width:'+pct+'%;';
+  track.appendChild(fill);
+  const val=document.createElement('span');
+  val.style.cssText='font-family:var(--mono);font-size:9px;color:var(--text3);width:28px;';
+  val.textContent=pct+'%';
+  row.appendChild(label);row.appendChild(track);row.appendChild(val);
+  barDiv.appendChild(row);
+});
 
 window.addEventListener('resize',resize);
 resize();
