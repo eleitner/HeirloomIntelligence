@@ -104,7 +104,7 @@ canvas{display:block;width:100%;cursor:crosshair;}
   <div class="panels">
     <div class="matrix-wrap">
       <canvas id="scatter" height="600"></canvas>
-      <div class="axis-label x-label">← Better than expected &nbsp;&nbsp; MORTALITY &nbsp;&nbsp; Worse than expected →</div>
+      <div class="axis-label x-label">← Worse than expected &nbsp;&nbsp; MORTALITY &nbsp;&nbsp; Better than expected →</div>
       <div class="axis-label y-label">← Below median &nbsp;&nbsp; MEDICARE $/CASE &nbsp;&nbsp; Above median →</div>
     </div>
 
@@ -136,6 +136,7 @@ canvas{display:block;width:100%;cursor:crosshair;}
     N=2,490 (4% extreme outliers trimmed) · CMS Hospital Compare 2025 · Medicare IPPS CY2023<br>
     National median $/case: $11,562 · X: Actual − GRI-expected composite mortality · Y: $/case − national median<br>
     Dot color: GRI decile (blue/teal = urban → orange/red = rural) · Geography was not encoded in either axis.<br>
+    809 hospitals (predominantly Critical Access, avg residual +2.3%) excluded — no DRG-based payment data.<br>
     Heirloom Data 2026
   </div>
 </div>
@@ -188,13 +189,13 @@ function draw(){
   ctx.clearRect(0,0,w,h);
   const zeroX=xScale(0),zeroY=yScale(0);
 
-  ctx.fillStyle='rgba(251,113,133,0.03)';
-  ctx.fillRect(pad.l,zeroY,zeroX-pad.l,h-pad.b-zeroY);
   ctx.fillStyle='rgba(200,180,120,0.015)';
+  ctx.fillRect(pad.l,zeroY,zeroX-pad.l,h-pad.b-zeroY);
+  ctx.fillStyle='rgba(251,113,133,0.03)';
   ctx.fillRect(zeroX,zeroY,w-pad.r-zeroX,h-pad.b-zeroY);
-  ctx.fillStyle='rgba(100,160,220,0.02)';
-  ctx.fillRect(pad.l,pad.t,zeroX-pad.l,zeroY-pad.t);
   ctx.fillStyle='rgba(45,212,191,0.02)';
+  ctx.fillRect(pad.l,pad.t,zeroX-pad.l,zeroY-pad.t);
+  ctx.fillStyle='rgba(100,160,220,0.02)';
   ctx.fillRect(zeroX,pad.t,w-pad.r-zeroX,zeroY-pad.t);
 
   ctx.strokeStyle='rgba(255,255,255,0.18)';
@@ -224,19 +225,19 @@ function draw(){
   }
 
   ctx.font='700 11px "JetBrains Mono"';
-  ctx.textAlign='left';
-  ctx.fillStyle='rgba(251,113,133,0.55)';
-  ctx.fillText('DOING MORE.',pad.l+8,h-pad.b-18);
-  ctx.fillText('PAID LESS.',pad.l+8,h-pad.b-5);
   ctx.textAlign='right';
+  ctx.fillStyle='rgba(251,113,133,0.55)';
+  ctx.fillText('DOING MORE.',w-pad.r-8,h-pad.b-18);
+  ctx.fillText('PAID LESS.',w-pad.r-8,h-pad.b-5);
+  ctx.textAlign='left';
   ctx.fillStyle='rgba(45,212,191,0.35)';
-  ctx.fillText('DOING LESS.',w-pad.r-8,pad.t+16);
-  ctx.fillText('PAID MORE.',w-pad.r-8,pad.t+29);
+  ctx.fillText('DOING LESS.',pad.l+8,pad.t+16);
+  ctx.fillText('PAID MORE.',pad.l+8,pad.t+29);
 
   const sorted=[...Array(P.length).keys()].sort((a,b)=>P[b][2]-P[a][2]);
   for(const i of sorted){
     const p=P[i];
-    const x=xScale(p[0]),y=yScale(p[1]);
+    const x=xScale(-p[0]),y=yScale(p[1]);
     if(x<pad.l-2||x>w-pad.r+2||y<pad.t-2||y>h-pad.b+2) continue;
     const [hu,sa,lt]=decileHSL(p[5]);
     const sz=Math.max(2.2,Math.min(6,Math.sqrt(p[2]/300)));
@@ -247,7 +248,7 @@ function draw(){
   // Draw pinned hospital marker (ring only, details in sidebar)
   if(pinnedIdx>=0){
     const p=P[pinnedIdx];
-    const px=xScale(p[0]),py=yScale(p[1]);
+    const px=xScale(-p[0]),py=yScale(p[1]);
     if(px>=pad.l&&px<=w-pad.r&&py>=pad.t&&py<=h-pad.b){
       const [phu,psa,plt]=decileHSL(p[5]);
       // Outer pulse
@@ -269,7 +270,7 @@ canvas.addEventListener('mousemove',function(e){
   const mx=e.clientX-rect.left,my=e.clientY-rect.top;
   let closest=-1,closestDist=Infinity;
   for(let i=0;i<P.length;i++){
-    const x=xScale(P[i][0]),y=yScale(P[i][1]);
+    const x=xScale(-P[i][0]),y=yScale(P[i][1]);
     const dx=mx-x,dy=my-y,dist=dx*dx+dy*dy;
     if(dist<closestDist&&dist<300){closestDist=dist;closest=i;}
   }
@@ -277,12 +278,12 @@ canvas.addEventListener('mousemove',function(e){
     const p=P[closest];
     tipN.textContent=p[3]+', '+p[4];
     const gapStr=p[1]>=0?'+$'+p[1].toLocaleString():'-$'+(-p[1]).toLocaleString();
-    tipD.innerHTML='GRI Decile '+p[5]+' · '+(p[0]>=0?'+':'')+p[0].toFixed(1)+'% vs expected<br>$'+p[6].toLocaleString()+'/case ('+gapStr+' vs median)<br>'+p[2].toLocaleString()+' Medicare discharges';
+    tipD.innerHTML='GRI Decile '+p[5]+' · '+((-p[0])>=0?'+':'')+(-p[0]).toFixed(1)+'% vs expected<br>$'+p[6].toLocaleString()+'/case ('+gapStr+' vs median)<br>'+p[2].toLocaleString()+' Medicare discharges';
     tip.style.display='block';
     tip.style.left=Math.min(e.clientX+14,window.innerWidth-300)+'px';
     tip.style.top=(e.clientY-50)+'px';
     if(closest!==lastHit){lastHit=closest;draw();
-      const x=xScale(p[0]),y=yScale(p[1]);
+      const x=xScale(-p[0]),y=yScale(p[1]);
       const [hu,sa,lt]=decileHSL(p[5]);
       ctx.fillStyle='hsla('+hu+','+sa+'%,'+lt+'%,0.95)';
       ctx.beginPath();ctx.arc(x,y,8,0,Math.PI*2);ctx.fill();
